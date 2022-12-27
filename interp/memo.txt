@@ -1,0 +1,30 @@
+61906999 桑名真結香
+練習問題1.
+interp1.mlに実装しました。実行結果は以下の通りです。
+
+# interp prog1;;
+3
+- : id -> int = <fun>
+# interp prog2;;
+Exception: No_such_symbol.
+
+式のtypeとmatch withの箇所にStmtExpを追記しました。
+
+
+
+練習問題2.
+interp2.mlに実装しました。実行結果は以下の通りです。
+
+# interp prog1;;
+3
+- : stmt * (id -> int) =
+(Stmts (Print (Id "dummy"), Print (Id "dummy")), <fun>)
+# interp prog2;;
+3
+- : stmt * (id -> int) =
+(Stmts (Print (Id "dummy"), Print (Id "dummy")), <fun>)
+
+
+式の返り値をstmt*intにしました。返り値にstmtが必要のないもの(Plusなど)についてはdummy変数を定義し、返すようにしています。
+また、trans_expを利用する箇所には返り値としてstmtとintを取るようにしています。
+最終的にStmts内でStmtExpの文を使用したいので、Assignもstmt*(id->int)を返すように変更しました。
