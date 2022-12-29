@@ -2,7 +2,6 @@
 	int a, b, m, n, r;
 
         sprint ("You must give 2 integers.\n");
-        // comment
         sprint ("First integer: ");
         scan  (a);
         sprint ("Second integer: ");
@@ -13,7 +12,6 @@
         n = r;
 	while (r > 0) {
                 r = m - (m / n) * n;
-
                 m = n;
                 n = r;
 	}

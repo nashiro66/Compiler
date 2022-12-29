@@ -1,6 +1,7 @@
 
 
 (* The definition of the abstract syntax tree *)
+exception Error of string
 type id = string
 type var = Var of id | IndexedVar of var * exp
 and stmt = Assign of var * exp        

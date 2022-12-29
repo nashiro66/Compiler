@@ -2,6 +2,7 @@
 
 open Printf
 open Ast
+open Count
 
 %}
 
@@ -9,7 +10,7 @@ open Ast
 %token <int> NUM
 %token <string> STR ID
 %token INT IF WHILE SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW
-%token PLUS MINUS TIMES DIV LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
+%token PLUS MINUS TIMES DIV LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID NEXTLINE
 %type <Ast.stmt> prog
 
 
@@ -52,7 +53,9 @@ fargs_opt : /* empty */ { [] }
 fargs: fargs COMMA ty ID     { $1@[($3,$4)] }
      | ty ID                 { [($1,$2)] }
      ;
-
+next_line: NEXTLINE { Count.increment() }
+     ;
+     
 stmts: stmts stmt  { $1@[$2] }
      | stmt        { [$1] }
      ;
@@ -71,6 +74,36 @@ stmt : ID ASSIGN expr SEMI    { Assign (Var $1, $3) }
      | RETURN expr SEMI    { CallProc ("return", [$2]) }
      | block { $1 }
      | SEMI { NilStmt }
+     | error ELSE { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:else"))}
+     | error WHILE { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:while"))}
+     | error SCAN { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:scan"))}
+     | error SPRINT { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:sprint"))}
+     | error IPRINT { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:iprint"))}
+     | error INT { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:int"))}
+     | error RETURN { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:return"))}
+     | error TYPE { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:type"))}
+     | error VOID { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:void"))}
+     | error ID { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:"^ $2))}
+     | error STR { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:"^ $2))}
+     | error ASSIGN { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:="))}
+     | error EQ { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:=="))}
+     | error NEQ { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:!="))}
+     | error GT { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:>"))}
+     | error LT { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:<"))}
+     | error GE { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:>="))}
+     | error LE { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:<="))}
+     | error PLUS { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:+"))}
+     | error MINUS { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:-"))}
+     | error TIMES { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:*"))}
+     | error DIV { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:/"))}
+     | error LB { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:{"))}
+     | error RB { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:}"))}
+     | error LS { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:["))}
+     | error RS { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:]"))}
+     | error LP { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:("))}
+     | error RP { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:)"))}
+     | error COMMA { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:,"))}
+     | error SEMI { raise (Error("line" ^ string_of_int(!Count.line) ^ "error:;"))}
      ;
 
 aargs_opt: /* empty */     { [] }

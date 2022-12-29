@@ -41,7 +41,8 @@ rule lexer = parse
     | ','                     { COMMA }
     | ';'                     { SEMI }
     | "//"                    { comment lexbuf; lexer lexbuf}
-    | [' ' '\t' '\n']         { lexer lexbuf }(* eat up whitespace *) 
+    | [' ' '\t']              { lexer lexbuf }(* eat up whitespace *) 
+    | '\n'                    { NEXTLINE; lexer lexbuf }
     | eof                     { raise End_of_file }
     | _                       { raise No_such_symbol }
 and comment = parse
