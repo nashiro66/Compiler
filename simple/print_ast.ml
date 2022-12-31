@@ -43,7 +43,7 @@ let main () =
             else stdin in
                 let lexbuf = Lexing.from_channel cin in
   (* The start of the entire program *)
-                   print_string (ast_stmt (Parser.prog Lexer.lexer lexbuf)); 
+                   print_string (ast_stmt (Parser.prog Lexer.lexer lexbuf));
                    print_string "\n"
 
 let _ = try main () with 

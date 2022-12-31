@@ -2,6 +2,7 @@
 
 open Printf
 open Ast
+open Lexing
 open Count
 
 %}
@@ -10,7 +11,7 @@ open Count
 %token <int> NUM
 %token <string> STR ID
 %token INT IF WHILE SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW
-%token PLUS MINUS TIMES DIV LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID NEXTLINE
+%token PLUS MINUS TIMES DIV LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
 %type <Ast.stmt> prog
 
 
@@ -53,9 +54,7 @@ fargs_opt : /* empty */ { [] }
 fargs: fargs COMMA ty ID     { $1@[($3,$4)] }
      | ty ID                 { [($1,$2)] }
      ;
-next_line: NEXTLINE { Count.increment() }
-     ;
-     
+
 stmts: stmts stmt  { $1@[$2] }
      | stmt        { [$1] }
      ;

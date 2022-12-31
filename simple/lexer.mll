@@ -2,6 +2,17 @@
 {
  open Parser  
  exception No_such_symbol
+ open Lexing
+ 
+ let next_line lexbuf =
+    let pos = lexbuf.lex_curr_p in
+        lexbuf.lex_curr_p <-
+            { pos with pos_bol = lexbuf.lex_curr_pos;
+                    pos_lnum = pos.pos_lnum + 1
+            }
+ let save_next_line lexbuf =
+    let pos = lexbuf.lex_curr_p in
+        Count.line := pos.pos_lnum
 }
 
 let digit = ['0'-'9']
@@ -42,10 +53,11 @@ rule lexer = parse
     | ';'                     { SEMI }
     | "//"                    { comment lexbuf; lexer lexbuf}
     | [' ' '\t']              { lexer lexbuf }(* eat up whitespace *) 
-    | '\n'                    { NEXTLINE; lexer lexbuf }
+    | '\n'                    { next_line lexbuf; save_next_line lexbuf; lexer lexbuf }
     | eof                     { raise End_of_file }
     | _                       { raise No_such_symbol }
 and comment = parse
     | '\n'                    { () }
     | eof                     { () }
     | _                       { comment lexbuf }
+    
