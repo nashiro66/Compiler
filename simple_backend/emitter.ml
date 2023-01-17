@@ -205,6 +205,15 @@ and trans_exp ast nest env = match ast with
                                            ^ "\tcqto\n"
                                            ^ "\tidivq %rbx\n"
                                            ^ "\tpushq %rax\n"
+                  (* %のコード *)
+                  | CallFunc ("%", [left; right]) ->
+                                             trans_exp left nest env
+                                           ^ trans_exp right nest env
+                                           ^ "\tpopq %rbx\n"
+                                           ^ "\tpopq %rax\n"
+                                           ^ "\tcqto\n"
+                                           ^ "\tidivq %rbx\n"
+                                           ^ "\tpushq %rdx\n"
                   (* 反転のコード *)
                   | CallFunc("!",  arg::_) -> 
                                              trans_exp arg nest env
