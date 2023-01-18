@@ -52,7 +52,7 @@ let rec trans_dec ast nest tenv env = match ast with
                  ^ code                  (* 本体コード *)
                  ^ epilogue              (* エピローグ *)
    (* 変数宣言の処理 *)
- | VarDec (t,s) -> ()
+ | VarDec (t, s) -> ()
    (* 型宣言の処理 *)
  | TypeDec (s,t) -> 
       let entry = tenv s in
