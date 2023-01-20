@@ -92,6 +92,8 @@ and type_stmt ast env =
           | Block (dl, _) -> check_redecl dl [] []
           | Assign (v, e) -> 
                if (type_var v env) != (type_exp e env) then raise (TypeErr "type error 4")
+          | AddExp (v, e) -> 
+               if (type_var v env) != (type_exp e env) then raise (TypeErr "type error 4")
           | If (e,_,_) -> type_cond e env
           | While (e,_) -> type_cond e env
           | NilStmt -> ()

@@ -67,13 +67,19 @@ and trans_stmt ast nest tenv env =
                      Assign (v, e) -> trans_exp e nest env
                                     ^ trans_var v nest env
                                     ^ "\tpopq (%rax)\n"
+                  (* 変数+=式のコード *)
+                   | AddExp (v, e) -> trans_exp e nest env
+                                    ^ trans_var v nest env
+                                    ^ "\tmovq (%rax), %rbx\n"
+                                    ^ "\taddq %rbx, (%rsp)\n"
+                                    ^ "\tpopq (%rax)\n"
                    (* iprintのコード *)
                    | CallProc ("iprint", [arg]) -> 
-                           (trans_exp arg nest env
-                        ^  "\tpopq  %rsi\n"
-                        ^  "\tleaq IO(%rip), %rdi\n"
-                        ^  "\tmovq $0, %rax\n"
-                        ^  "\tcallq printf\n")
+                              (trans_exp arg nest env
+                            ^  "\tpopq  %rsi\n"
+                            ^  "\tleaq IO(%rip), %rdi\n"
+                            ^  "\tmovq $0, %rax\n"
+                            ^  "\tcallq printf\n")
                    (* sprintのコード *)
                    | CallProc ("sprint", [StrExp s]) -> 
                        (let l = incLabel() in
@@ -116,7 +122,7 @@ and trans_stmt ast nest tenv env =
                                ^  "\tcallq " ^ s ^ "\n"
                                  (* 積んだ引数+静的リンクを降ろす *)
                                ^  sprintf "\taddq $%d, %%rsp\n" ((List.length el + 1 + 1) / 2 * 2 * 8) 
-                            | _ -> raise (No_such_symbol s)) 
+                            | _ -> raise (No_such_symbol s))
                   (* ブロックのコード：文を表すブロックは，関数定義を無視する．*)
                   | Block (dl, sl) -> 
                        (* ブロック内宣言の処理 *)

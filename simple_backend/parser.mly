@@ -58,6 +58,7 @@ stmts: stmts stmt  { $1@[$2] }
      ;
 
 stmt : ID ASSIGN expr SEMI    { Assign (Var $1, $3) }
+     | ID PLUS ASSIGN expr SEMI   { AddExp (Var $1, $4) }
      | ID LS expr RS ASSIGN expr SEMI  { Assign (IndexedVar (Var $1, $3), $6) }
      | IF LP cond RP stmt     { If ($3, $5, None) }
      | IF LP cond RP stmt ELSE stmt 
