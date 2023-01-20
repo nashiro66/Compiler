@@ -15,7 +15,7 @@ open Ast
 
 %nonassoc GT LT EQ NEQ GE LE
 %left PLUS MINUS         /* lowest precedence */
-%left TIMES DIV MOD      /* medium precedence */
+%left TIMES POW DIV MOD      /* medium precedence */
 %nonassoc UMINUS      /* highest precedence */
 
 
