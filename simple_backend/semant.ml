@@ -96,6 +96,7 @@ and type_stmt ast env =
                if (type_var v env) != (type_exp e env) then raise (TypeErr "type error 4")
           | If (e,_,_) -> type_cond e env
           | While (e,_) -> type_cond e env
+          | DoWhile (e,_) -> type_cond e env
           | NilStmt -> ()
 and type_var ast env =
        match ast with

@@ -157,6 +157,15 @@ and trans_stmt ast nest tenv env =
                                        ^ trans_stmt s nest tenv env
                                        ^ sprintf "\tjmp L%d\n" l2
                                        ^ sprintf "L%d:\n" l1
+                  (* Dowhile文のコード *)
+                  | DoWhile (e,s) -> let (condCode, l1) = trans_cond e nest env in
+                                       let l2 = incLabel() in
+                                           trans_stmt s nest tenv env
+                                           ^ sprintf "L%d:\n" l2 
+                                           ^ condCode
+                                           ^ trans_stmt s nest tenv env
+                                           ^ sprintf "\tjmp L%d\n" l2
+                                           ^ sprintf "L%d:\n" l1
                   (* 空文 *)
                   | NilStmt -> ""
 (* 参照アドレスの処理 *)
