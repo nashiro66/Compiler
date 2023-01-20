@@ -196,6 +196,26 @@ and trans_exp ast nest env = match ast with
                                            ^ "\tpopq %rax\n"
                                            ^ "\timulq (%rsp), %rax\n"
                                            ^ "\tmovq %rax, (%rsp)\n"
+                  (* ^のコード *)
+                  | CallFunc ("^", [left; right]) ->
+                                              let l1 = incLabel() in
+                                                let l2 = incLabel() in
+                                                  trans_exp left nest env
+                                                ^ trans_exp right nest env
+                                                ^ "\tpopq %rbx\n"
+                                                ^ "\tpopq %rax\n"
+                                                ^ "\timulq %rax, %rax\n"
+                                                ^ "\tmovq %rax, (%rsp)\n"
+                                                ^ "\tsubq $2, %rbx\n"
+                                                ^ sprintf "L%d:\n" l2
+                                                ^ "\tcmpq %rbx $0\n"
+                                                ^ sprintf "\tje L%d\n" l1
+                                                ^ "\timulq (%rsp), %rax\n"
+                                                ^ "\tmovq %rax, (%rsp)\n"
+                                                ^ "\tsubq $1, %rbx\n"
+                                                ^ sprintf "\tjmp L%d\n" l2
+                                                ^ sprintf "L%d:\n" l1
+
                   (* /のコード *)
                   | CallFunc ("/", [left; right]) ->
                                              trans_exp left nest env

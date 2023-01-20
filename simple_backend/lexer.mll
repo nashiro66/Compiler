@@ -31,6 +31,7 @@ rule lexer = parse
 | '+'                     { PLUS }
 | '-'                     { MINUS }
 | '*'                     { TIMES }
+| '^'                     { POW }
 | '/'                     { DIV }
 | '%'                     { MOD }
 | '{'                     { LB  }
