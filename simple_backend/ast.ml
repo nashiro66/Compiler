@@ -3,8 +3,8 @@
 (* The definition of the abstract syntax tree *)
 type id = string
 type var = Var of id | IndexedVar of var * exp
-and stmt = Assign of var * exp
-        | AddExp of var * exp  
+and stmt = Assign of var * exp        
+        | AddExp of var * exp
         | CallProc of id * (exp list)
         | Block of (dec list) * (stmt list)
         | If of exp * stmt * (stmt option)

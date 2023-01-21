@@ -68,18 +68,18 @@ and trans_stmt ast nest tenv env =
                                     ^ trans_var v nest env
                                     ^ "\tpopq (%rax)\n"
                   (* 変数+=式のコード *)
-                   | AddExp (v, e) -> trans_exp e nest env
+                  | AddExp (v, e) -> trans_exp e nest env
                                     ^ trans_var v nest env
                                     ^ "\tmovq (%rax), %rbx\n"
                                     ^ "\taddq %rbx, (%rsp)\n"
                                     ^ "\tpopq (%rax)\n"
                    (* iprintのコード *)
                    | CallProc ("iprint", [arg]) -> 
-                              (trans_exp arg nest env
-                            ^  "\tpopq  %rsi\n"
-                            ^  "\tleaq IO(%rip), %rdi\n"
-                            ^  "\tmovq $0, %rax\n"
-                            ^  "\tcallq printf\n")
+                           (trans_exp arg nest env
+                        ^  "\tpopq  %rsi\n"
+                        ^  "\tleaq IO(%rip), %rdi\n"
+                        ^  "\tmovq $0, %rax\n"
+                        ^  "\tcallq printf\n")
                    (* sprintのコード *)
                    | CallProc ("sprint", [StrExp s]) -> 
                        (let l = incLabel() in
@@ -122,7 +122,7 @@ and trans_stmt ast nest tenv env =
                                ^  "\tcallq " ^ s ^ "\n"
                                  (* 積んだ引数+静的リンクを降ろす *)
                                ^  sprintf "\taddq $%d, %%rsp\n" ((List.length el + 1 + 1) / 2 * 2 * 8) 
-                            | _ -> raise (No_such_symbol s))
+                            | _ -> raise (No_such_symbol s)) 
                   (* ブロックのコード：文を表すブロックは，関数定義を無視する．*)
                   | Block (dl, sl) -> 
                        (* ブロック内宣言の処理 *)
@@ -157,17 +157,17 @@ and trans_stmt ast nest tenv env =
                                        ^ trans_stmt s nest tenv env
                                        ^ sprintf "\tjmp L%d\n" l2
                                        ^ sprintf "L%d:\n" l1
-                  (* Dowhile文のコード *)
-                  | DoWhile (e,s) -> let (condCode, l1) = trans_cond e nest env in
-                                       let l2 = incLabel() in
-                                           trans_stmt s nest tenv env
-                                           ^ sprintf "L%d:\n" l2 
-                                           ^ condCode
-                                           ^ trans_stmt s nest tenv env
-                                           ^ sprintf "\tjmp L%d\n" l2
-                                           ^ sprintf "L%d:\n" l1
                   (* 空文 *)
                   | NilStmt -> ""
+                  (* Dowhile文のコード *)
+                  | DoWhile (e,s) -> let (condCode, l1) = trans_cond e nest env in
+                  let l2 = incLabel() in
+                      trans_stmt s nest tenv env
+                      ^ sprintf "L%d:\n" l2 
+                      ^ condCode
+                      ^ trans_stmt s nest tenv env
+                      ^ sprintf "\tjmp L%d\n" l2
+                      ^ sprintf "L%d:\n" l1
 (* 参照アドレスの処理 *)
 and trans_var ast nest env = match ast with
                    Var s -> let entry = env s in 
@@ -211,8 +211,8 @@ and trans_exp ast nest env = match ast with
                                            ^ "\tpopq %rax\n"
                                            ^ "\timulq (%rsp), %rax\n"
                                            ^ "\tmovq %rax, (%rsp)\n"
-                  (* ^のコード *)
-                  | CallFunc ("^", [left; right]) ->
+                 (* ^のコード *)
+                 | CallFunc ("^", [left; right]) ->
                                          let l1 = incLabel() in
                                            let l2 = incLabel() in
                                              trans_exp left nest env
@@ -238,8 +238,8 @@ and trans_exp ast nest env = match ast with
                                            ^ "\tcqto\n"
                                            ^ "\tidivq %rbx\n"
                                            ^ "\tpushq %rax\n"
-                  (* %のコード *)
-                  | CallFunc ("%", [left; right]) ->
+		  (* %のコード *)
+		  | CallFunc("%", [left; right]) ->
                                              trans_exp left nest env
                                            ^ trans_exp right nest env
                                            ^ "\tpopq %rbx\n"

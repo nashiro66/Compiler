@@ -11,8 +11,8 @@ rule lexer = parse
 | digit+ as num  { NUM (int_of_string num) }
 | "if"                    { IF }
 | "else"                  { ELSE }
-| "do"                    { DO }
 | "while"                 { WHILE }
+| "do"                    { DO }
 | "scan"                  { SCAN }
 | "sprint"                { SPRINT }
 | "iprint"                { IPRINT }

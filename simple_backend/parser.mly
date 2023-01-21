@@ -8,8 +8,8 @@ open Ast
 /* File parser.mly */
 %token <int> NUM
 %token <string> STR ID
-%token INT IF DO WHILE SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW
-%token PLUS MINUS TIMES DIV POW MOD LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
+%token INT IF WHILE DO SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW
+%token PLUS MINUS TIMES POW DIV MOD LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
 %type <Ast.stmt> prog
 
 
@@ -58,13 +58,13 @@ stmts: stmts stmt  { $1@[$2] }
      ;
 
 stmt : ID ASSIGN expr SEMI    { Assign (Var $1, $3) }
-     | ID PLUS ASSIGN expr SEMI   { AddExp (Var $1, $4) }
+     | ID PLUS ASSIGN expr SEMI { AddExp (Var $1, $4) }
      | ID LS expr RS ASSIGN expr SEMI  { Assign (IndexedVar (Var $1, $3), $6) }
      | IF LP cond RP stmt     { If ($3, $5, None) }
      | IF LP cond RP stmt ELSE stmt 
                               { If ($3, $5, Some $7) }
-     | DO stmt WHILE LP cond RP  { DoWhile ($5, $2) }
      | WHILE LP cond RP stmt  { While ($3, $5) }
+     | DO stmt WHILE LP cond RP { DoWhile ($5, $2) }
      | SPRINT LP STR RP SEMI  { CallProc ("sprint", [StrExp $3]) }
      | IPRINT LP expr RP SEMI { CallProc ("iprint", [$3]) }
      | SCAN LP ID RP SEMI  { CallProc ("scan", [VarExp (Var $3)]) }
@@ -95,7 +95,7 @@ expr : NUM { IntExp $1  }
      | expr TIMES expr { CallFunc ("*", [$1; $3]) }
      | expr POW expr { CallFunc ("^", [$1; $3]) }
      | expr DIV expr { CallFunc ("/", [$1; $3]) }
-     | expr MOD expr { CallFunc ("%", [$1; $3]) }
+     | expr MOD expr { CallFunc("%", [$1;$3]) }
      | MINUS expr %prec UMINUS { CallFunc("!", [$2]) }
      | LP expr RP  { $2 }
      ;
