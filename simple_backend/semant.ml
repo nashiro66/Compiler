@@ -139,6 +139,8 @@ and type_exp ast env =
                                     else raise (TypeErr "type error 6")
                         else raise (TypeErr "type error 7")
                    | _ -> raise (No_such_symbol s))
+          | Increment (arg) -> 
+               (check_int (type_var arg env); INT)
           | _ -> raise (Err "internal error")
 and type_cond ast env =  
        match ast with

@@ -14,9 +14,9 @@ open Ast
 
 
 %nonassoc GT LT EQ NEQ GE LE
-%left PLUS MINUS         /* lowest precedence */
-%left TIMES POW DIV MOD  /* medium precedence */
-%nonassoc UMINUS         /* highest precedence */
+%left PLUS MINUS          /* lowest precedence */
+%left TIMES POW DIV MOD   /* medium precedence */
+%nonassoc UMINUS          /* highest precedence */
 
 
 %start prog           /* the entry point */
@@ -91,6 +91,7 @@ expr : NUM { IntExp $1  }
      | ID LP aargs_opt RP { CallFunc ($1, $3) } 
      | ID LS expr RS  { VarExp (IndexedVar (Var $1, $3)) }
      | expr PLUS expr { CallFunc ("+", [$1; $3]) }
+     | ID PLUS PLUS { Increment (Var $1) }
      | expr MINUS expr { CallFunc ("-", [$1; $3]) }
      | expr TIMES expr { CallFunc ("*", [$1; $3]) }
      | expr POW expr { CallFunc ("^", [$1; $3]) }

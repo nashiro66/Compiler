@@ -6,13 +6,11 @@
         scan  (a);
         sprint ("Second integer: ");
         scan (b);
-        m = 0;
-        do{
-                m += a ;
-                b = b-1;   
-        }while (b > 0)
-        sprint ("Answer = ");
-        iprint (m) ;
+        a = (b++);
+        sprint ("Answer a = ");
+        iprint (a) ;
+        sprint ("Answer b = ");
+        iprint (b) ;
         sprint ("\n");
 }
 

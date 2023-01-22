@@ -256,6 +256,13 @@ and trans_exp ast nest env = match ast with
                                  trans_stmt (CallProc(s, el)) nest initTable env 
                                  (* 返戻値は%raxに入れて返す *)
                                ^ "\tpushq %rax\n"
+                  (* ++のコード *)
+                  | Increment (arg) -> 
+                                 trans_var arg nest env
+                                 ^ "\tmovq (%rax), %rbx\n"
+                                 ^ "\tpushq %rbx\n"
+                                 ^ "\taddq $1, %rbx\n"
+                                 ^ "\tmovq %rbx, (%rax)\n"
                   | _ -> raise (Err "internal error")
 (* 関係演算の処理 *)
 and trans_cond ast nest env = match ast with
