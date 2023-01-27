@@ -168,10 +168,22 @@ and trans_stmt ast nest tenv env =
                       ^ trans_stmt s nest tenv env
                       ^ sprintf "\tjmp L%d\n" l2
                       ^ sprintf "L%d:\n" l1
-                  | For(v, e1, e2, s) -> trans_var v nest env
-                      ^ trans_exp e1 nest env
+                  | For(v, e1, e2, s) -> 
+                  let l1 = incLabel() in
+                      let l2 = incLabel() in
+                        trans_exp e1 nest env
                       ^ trans_exp e2 nest env
+                      ^ "\tpopq %rcx\n"
+                      ^ "\tpopq %rbx\n"
+                      ^ sprintf "L%d:\n" l2
+                      ^ "\tcmpq %rbx, %rcx\n"
+                      ^ sprintf "\tje L%d\n" l1
                       ^ trans_stmt s nest tenv env
+                      ^ "\taddq $1, %rbx\n"
+                      ^ sprintf "\tjmp L%d\n" l2
+                      ^ sprintf "L%d:\n" l1
+                      ^ trans_var v nest env
+                      ^ "\tmovq %rbx, (%rax)\n"
 		      
 (* 参照アドレスの処理 *)
 and trans_var ast nest env = match ast with
@@ -243,8 +255,8 @@ and trans_exp ast nest env = match ast with
                                            ^ "\tcqto\n"
                                            ^ "\tidivq %rbx\n"
                                            ^ "\tpushq %rax\n"
-		  (* %のコード *)
-		  | CallFunc("%", [left; right]) ->
+                  (* %のコード *)
+                  | CallFunc("%", [left; right]) ->
                                              trans_exp left nest env
                                            ^ trans_exp right nest env
                                            ^ "\tpopq %rbx\n"

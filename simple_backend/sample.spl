@@ -10,6 +10,7 @@
 	    a=a*3;
         sprint ("Answer a = ");
         iprint (a) ;
+        sprint ("\n");
         sprint ("Answer b = ");
         iprint (b) ;
         sprint ("\n");
