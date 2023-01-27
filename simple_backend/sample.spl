@@ -6,7 +6,8 @@
         scan  (a);
         sprint ("Second integer: ");
         scan (b);
-        a = (b++);
+	for(b=0 .. 5)
+	    a=a*3;
         sprint ("Answer a = ");
         iprint (a) ;
         sprint ("Answer b = ");

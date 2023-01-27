@@ -20,6 +20,7 @@ rule lexer = parse
 | "return"                { RETURN }
 | "type"                  { TYPE }
 | "void"                  { VOID }
+| "for"                   { FOR }
 | id as text              { ID text }
 | '\"'[^'\"']*'\"' as str { STR str }
 | '='                     { ASSIGN }
@@ -42,6 +43,7 @@ rule lexer = parse
 | '('                     { LP  }
 | ')'                     { RP  }
 | ','                     { COMMA }
+| ".."                    { TO }  
 | ';'                     { SEMI }
 | [' ' '\t' '\n']         { lexer lexbuf }(* eat up whitespace *) 
 | eof                     { raise End_of_file }

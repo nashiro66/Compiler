@@ -98,6 +98,10 @@ and type_stmt ast env =
           | While (e,_) -> type_cond e env
           | DoWhile (e,_) -> type_cond e env
           | NilStmt -> ()
+          | For(v, e1, e2, s) -> if(type_var v env) != INT then raise (TypeErr "type error 4")
+          else if(type_exp e1 env) != INT then raise (TypeErr "type err 4")
+          else if(type_exp e2 env) != INT then raise (TypeErr "type err 4")
+	  
 and type_var ast env =
        match ast with
             Var s -> let entry = env s in 

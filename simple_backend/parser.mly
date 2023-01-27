@@ -9,7 +9,7 @@ open Ast
 %token <int> NUM
 %token <string> STR ID
 %token INT IF WHILE DO SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW
-%token PLUS MINUS TIMES POW DIV MOD LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
+%token PLUS MINUS TIMES POW DIV MOD LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID FOR TO
 %type <Ast.stmt> prog
 
 
@@ -73,6 +73,7 @@ stmt : ID ASSIGN expr SEMI    { Assign (Var $1, $3) }
      | RETURN expr SEMI    { CallProc ("return", [$2]) }
      | block { $1 }
      | SEMI { NilStmt }
+     | FOR LP ID ASSIGN expr TO expr RP stmt { For (Var $3, $5, $7, $9) }
      ;
 
 aargs_opt: /* empty */     { [] }

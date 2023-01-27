@@ -10,6 +10,7 @@ and stmt = Assign of var * exp
         | If of exp * stmt * (stmt option)
         | While of exp * stmt
         | DoWhile of exp * stmt
+        | For of var * exp * exp * stmt
         | NilStmt
 and exp = VarExp of var | StrExp of string | IntExp of int 
         | CallFunc of id * (exp list)
