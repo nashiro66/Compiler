@@ -81,7 +81,9 @@ and type_stmt ast env =
           | CallProc ("iprint", [arg]) -> 
                     if (type_exp arg env) != INT then
                           raise (TypeErr "iprint requires int value")
-          | CallProc ("return", [arg]) -> () (* result type should be checked *)
+          | CallProc ("return", [arg]) ->
+                    if (type_exp arg env) != INT then 
+                          raise (TypeErr "return requires int type")
           | CallProc ("sprint", _) -> ()
           | CallProc ("new", [VarExp (Var s)]) -> let entry = env s in 
                     (match entry with
